@@ -71,7 +71,8 @@ public class NXTLineSimOrig
     }
   }
 
-  private static void _init(GameGrid gg)
+  @SuppressWarnings("unused")
+	private static void _init(GameGrid gg)
   {
     GGBackground bg = gg.getBg();
     bg.setPaintColor(Color.black);

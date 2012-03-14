@@ -4,7 +4,7 @@
 import ch.aplu.nxtsim.*;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
-import java.util.Random;
+//import java.util.Random;
 
 public class NXTRandomSim
 {

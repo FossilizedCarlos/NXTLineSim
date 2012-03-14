@@ -1,23 +1,19 @@
-// NXTSim.java
-// Two light sensors, polling
-
 import ch.aplu.nxtsim.*;
-//import ch.aplu.util.Monitor;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
 import java.util.*; 
-import javax.swing.JLabel;
 
 public class NXTLineSim
 {
-	//private static int xOld, yOld;
 	Random generator = new Random(19580427);
 	NxtRobot robot = new NxtRobot();
 	Gear gear = new Gear();
 	LightSensor ls1 = new LightSensor(SensorPort.S1);
 	LightSensor ls2 = new LightSensor(SensorPort.S2);
 	TouchSensor ts1 = new TouchSensor(SensorPort.S3);
-	JLabel collisionLabel = new JLabel();
+	LinkedList<Point> obstacleList = new LinkedList<Point>();
+	Point currentPosition = new Point();
+	Point obstaclePosition = new Point();		
 
 	public NXTLineSim()
 	{
@@ -27,12 +23,6 @@ public class NXTLineSim
 		robot.addPart(ts1);
 		gear.forward();
 		gear.setSpeed(110);
-		LinkedList<Point> obstacleList = new LinkedList<Point>();
-		Point currentPosition = new Point();
-		int x1 = 0,
-				x2 = 0,
-				y1 = 0,
-				y2 = 0;
 
 		boolean inside = true;
 		while (true)
@@ -48,12 +38,14 @@ public class NXTLineSim
 							gear.left(200);
 							gear.forward();
 							inside = false;
+							System.out.println(inside);
 						}
 						else if (inside)
 						{
 							gear.right(200);
 							gear.forward();
 							inside = false;
+							System.out.println(inside);
 						}
 					}
 				}
@@ -62,20 +54,21 @@ public class NXTLineSim
 					obstacleList.add(new Point(currentPosition));
 					gear.right(400);
 					System.out.println("("+obstacleList.getLast().getX()+", "+ obstacleList.getLast().getY()+")");
-					System.out.println(gear.getSpeed());
 				}
 				checkLineColor();
 			}
-			if (gear.getX() > (x1 + 35) && gear.getX() < (x1 + 85) 
-					&& gear.getY() > (y1) && gear.getY() < (y1 + 85) && x2 != 0)
+			synchronized(obstacleList)
 			{
-				gear.left(2);
-			}      
-			if (gear.getX() > (x2) && gear.getX() < (x2 + 110) 
-					&& gear.getY() > (y2 - 120) && gear.getY() < (y2-60) && x2 != 0)
-			{
-				gear.left(2);
+				ListIterator<Point> obstacleListChecker = obstacleList.listIterator();
+				if (obstacleListChecker.hasNext())
+				{
+					obstaclePosition = obstacleListChecker.next();
+					if (currentPosition.distance(obstaclePosition) < 160){
+						gear.left(2);					
+					System.out.println(currentPosition.distance(obstaclePosition));}
+				}
 			}
+
 			if (gear.getX() < 0 || gear.getX() > 500 || gear.getY() < 0 || gear.getY() >500)
 			{
 				gear.backward(400);
