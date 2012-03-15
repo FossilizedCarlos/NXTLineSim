@@ -63,8 +63,10 @@ public class NXTLineSim
 				if (obstacleListChecker.hasNext())
 				{
 					obstaclePosition = obstacleListChecker.next();
-					if (currentPosition.distance(obstaclePosition) < 160){
-						gear.left(2);					
+					if (currentPosition.distance(obstaclePosition) < 40){
+						gear.backward(20);
+						gear.left(3);
+						gear.forward();
 					System.out.println(currentPosition.distance(obstaclePosition));}
 				}
 			}
