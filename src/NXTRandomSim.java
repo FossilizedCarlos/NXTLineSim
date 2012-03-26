@@ -59,8 +59,8 @@ public class NXTRandomSim
       }
       if (gear.getX() < 0 || gear.getX() > 500 || gear.getY() < 0 || gear.getY() >500)
       {
-        gear.backward(6000);
-        //gear.forward();
+        gear.backward(3000);
+        gear.forward();
       }
       checkLineColor();
     }
