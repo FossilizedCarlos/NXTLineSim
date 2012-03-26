@@ -60,12 +60,12 @@ public class NXTLineSim
 			synchronized(obstacleList)
 			{
 				ListIterator<Point> obstacleListChecker = obstacleList.listIterator();
-				if (obstacleListChecker.hasNext())
+				while (obstacleListChecker.hasNext())
 				{
 					obstaclePosition = obstacleListChecker.next();
 					if (currentPosition.distance(obstaclePosition) < 40){
-						gear.backward(20);
-						gear.left(3);
+						gear.backward(400);
+						gear.left(400);
 						gear.forward();
 					System.out.println(currentPosition.distance(obstaclePosition));}
 				}

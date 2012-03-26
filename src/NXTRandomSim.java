@@ -4,155 +4,105 @@
 import ch.aplu.nxtsim.*;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
-//import java.util.Random;
+import java.util.*;
 
 public class NXTRandomSim
 {
+  Random generator = new Random(19580427);
+  NxtRobot robot = new NxtRobot();
+  Gear gear = new Gear();
+  LightSensor ls1 = new LightSensor(SensorPort.S1);
+  LightSensor ls2 = new LightSensor(SensorPort.S2);
+  TouchSensor ts1 = new TouchSensor(SensorPort.S3);
+  LinkedList<Point> obstacleList = new LinkedList<Point>();
+  Point currentPosition = new Point();
+  Point obstaclePosition = new Point();
+
   public NXTRandomSim()
   {
-    NxtRobot robot = new NxtRobot();
-    Gear gear = new Gear();
-    LightSensor ls1 = new LightSensor(SensorPort.S1);
-    LightSensor ls2 = new LightSensor(SensorPort.S2);
-    TouchSensor ts1 = new TouchSensor(SensorPort.S3);
     robot.addPart(gear);
     robot.addPart(ls1);
     robot.addPart(ls2);
     robot.addPart(ts1);
     gear.forward();
-    gear.setSpeed(250);
+    gear.setSpeed(110);
     //Random generator = new Random(19580427);
     int randomNumber = 500;//generator.nextInt(25);
-    int x1 = 0,
-        x2 = 0,
-        x3 = 0,
-        x4 = 0,
-        x5 = 0,
-        x6 = 0,
-        x7 = 0,
-        x8 = 0,
-        y1 = 0,
-        y2 = 0,
-        y3 = 0,
-        y4 = 0,
-        y5 = 0,
-        y6 = 0,
-        y7 = 0,
-        y8 = 0;
 
-    int v = 500;
-    double r = 0.;
-    boolean both = false;
+    boolean inside = true;
     while (true)
     {
-      int v1 = ls1.getValue();
-      int v2 = ls2.getValue();
-      if (v1 < v && v2 < v) {
-        gear.forward();
-      }
-      if (v1 < v && v2 > v)
-        gear.rightArc(r);
-      if (v1 > v && v2 < v)
-        gear.leftArc(r);
-      if (v1 > v && v2 > v)
-        gear.backward();
+      currentPosition.setLocation(gear.getX(), gear.getY());
       if (ts1.isPressed())
       {
-          if (x1 == 0 && y1 == 0)
-          {
-              x1 = gear.getX();
-              y1 = gear.getY();
-              gear.right(350);
+        /*
+        while (gear.getX() > 175 && gear.getX() < 325 && gear.getY() > 125 && gear.getY() < 375)
+        {
+          while (inside) {
+            if (inside && generator.nextInt(10) > 5)
+            {
+              gear.left(200);
+              gear.forward();
+              inside = false;
+              System.out.println(inside);
+            }
+            else if (inside)
+            {
+              gear.right(200);
+              gear.forward();
+              inside = false;
+              System.out.println(inside);
+            }
           }
-          else if (x2 == 0 && y2 == 0)
-          {
-              x2 = gear.getX();
-              y2 = gear.getY();
-              gear.left(350);
-          }
-          else if (x3 == 0 && y3 == 0)
-          {
-              x3 = gear.getX();
-              y3 = gear.getY();
-              gear.left(350);
-          }
-          else if (x4 == 0 && y4 == 0)
-          {
-              x4 = gear.getX();
-              y4 = gear.getY();
-              gear.left(350);
-          }
-          else if (x5 == 0 && y5 == 0)
-          {
-              x5 = gear.getX();
-              y5 = gear.getY();
-              gear.left(350);
-          }
-          else if (x6 == 0 && y6 == 0)
-          {
-              x6 = gear.getX();
-              y6 = gear.getY();
-              gear.left(350);
-          }
-          else if (x7 == 0 && y7 == 0)
-          {
-              x7 = gear.getX();
-              y7 = gear.getY();
-              gear.left(350);
-          }
-          else if (x8 == 0 && y8 == 0)
-          {
-              x8 = gear.getX();
-              y8 = gear.getY();
-              gear.left(350);
-          }
+        }*/
+        if (!obstacleList.contains(currentPosition))
+        {
+          obstacleList.add(new Point(currentPosition));
+          gear.backward(600);
+          gear.right(200);
+          System.out.println("("+obstacleList.getLast().getX()+", "+ obstacleList.getLast().getY()+")");
+        }
+        checkLineColor();
       }
-
-      if (gear.getX() > (x1 - 45) && gear.getX() < (x1 + 45) 
-    		  && gear.getY() > (y1 - 45) && gear.getY() < (y1 + 45) && x2 != 0)
+      synchronized(obstacleList)
       {
-          gear.left(randomNumber);
-          both = true;
-      }          
-      else if (gear.getX() > (x2 - 45) && gear.getX() < (x2 + 45) 
-    		  && gear.getY() > (y2 - 45) && gear.getY() < (y2 + 45) && x2 != 0 && both)
-      {
-          gear.left(randomNumber);
+        ListIterator<Point> obstacleListChecker = obstacleList.listIterator();
+        while (obstacleListChecker.hasNext())
+        {
+          obstaclePosition = obstacleListChecker.next();
+          if (currentPosition.distance(obstaclePosition) < 40){
+            gear.backward(600);
+            gear.left(200);
+            gear.forward();
+            System.out.println(currentPosition.distance(obstaclePosition));}
+        }
       }
-      else if (gear.getX() > (x3 - 45) && gear.getX() < (x3 + 45) 
-    		  && gear.getY() > (y3 - 45) && gear.getY() < (y3 + 45) && x3 != 0 && both)
+      if (gear.getX() < 0 || gear.getX() > 500 || gear.getY() < 0 || gear.getY() >500)
       {
-          gear.left(randomNumber);
+        gear.backward(6000);
+        //gear.forward();
       }
-      else if (gear.getX() > (x4 - 45) && gear.getX() < (x4 + 45) 
-    		  && gear.getY() > (y4 - 45) && gear.getY() < (y4 + 45) && x4 != 0 && both)
-      {
-          gear.left(randomNumber);
-      }
-      else if (gear.getX() > (x5 - 45) && gear.getX() < (x5 + 45) 
-    		  && gear.getY() > (y5 - 45) && gear.getY() < (y5 + 45) && x5 != 0 && both)
-      {
-          gear.left(randomNumber);
-      }
-      else if (gear.getX() > (x6 - 45) && gear.getX() < (x6 + 45) 
-    		  && gear.getY() > (y6 - 45) && gear.getY() < (y6 + 45) && x6 != 0 && both)
-      {
-          gear.left(randomNumber);
-      }
-      else if (gear.getX() > (x7 - 45) && gear.getX() < (x7 + 45) 
-    		  && gear.getY() > (y7 - 45) && gear.getY() < (y7 + 45) && x7 != 0 && both)
-      {
-          gear.left(randomNumber);
-      }
-      else if (gear.getX() > (x8 - 45) && gear.getX() < (x8 + 45) 
-    		  && gear.getY() > (y8 - 45) && gear.getY() < (y8 + 45) && x8 != 0 && both)
-      {
-          gear.left(randomNumber);
-      }
+      checkLineColor();
     }
   }
 
-  @SuppressWarnings("unused")
+  public void checkLineColor()
+  {
+    int v = 500;
+    double r = 0.;
+    int v1 = ls1.getValue();
+    int v2 = ls2.getValue();
+    if (v1 < v && v2 < v) {
+      gear.forward();
+    }
+    if (v1 < v && v2 > v)
+      gear.rightArc(r);
+    if (v1 > v && v2 < v)
+      gear.leftArc(r);
+    if (v1 > v && v2 > v)
+      gear.backward();
+  }
+
 	private static void _init(GameGrid gg)
   {
     GGBackground bg = gg.getBg();
