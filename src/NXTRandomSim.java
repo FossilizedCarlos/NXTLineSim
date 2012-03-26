@@ -35,26 +35,6 @@ public class NXTRandomSim
       currentPosition.setLocation(gear.getX(), gear.getY());
       if (ts1.isPressed())
       {
-        /*
-        while (gear.getX() > 175 && gear.getX() < 325 && gear.getY() > 125 && gear.getY() < 375)
-        {
-          while (inside) {
-            if (inside && generator.nextInt(10) > 5)
-            {
-              gear.left(200);
-              gear.forward();
-              inside = false;
-              System.out.println(inside);
-            }
-            else if (inside)
-            {
-              gear.right(200);
-              gear.forward();
-              inside = false;
-              System.out.println(inside);
-            }
-          }
-        }*/
         if (!obstacleList.contains(currentPosition))
         {
           obstacleList.add(new Point(currentPosition));
