@@ -10,16 +10,20 @@ import java.util.*;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;*/
+import javax.imageio.ImageIO;
+*/
 
 public class NXTRandomSim
 {
   static Random generator = new Random(System.currentTimeMillis());
+  static Random generatorX = new Random(3*System.currentTimeMillis());
+  static Random generatorY = new Random(7*System.currentTimeMillis());
   NxtRobot robot = new NxtRobot();
   Gear gear = new Gear();
   LightSensor ls1 = new LightSensor(SensorPort.S1);
   LightSensor ls2 = new LightSensor(SensorPort.S2);
   TouchSensor ts1 = new TouchSensor(SensorPort.S3);
+  LinkedList<Point> placementList = new LinkedList<Point>();
   LinkedList<Point> obstacleList = new LinkedList<Point>();
   Point currentPosition = new Point();
   Point obstaclePosition = new Point();
@@ -147,10 +151,9 @@ public class NXTRandomSim
             // Save as PNG
             File file = new File("src/sprites/Circle.jpg");
             ImageIO.write(rendImage, "jpg", file);
-        } catch (IOException e) {
-        }
-    }*/
-
+        } catch (IOException e) {}
+    }
+*/
   // ------------------ Environment --------------------------
   static
   {        // TODO get obstacle generation to work
@@ -162,13 +165,14 @@ public class NXTRandomSim
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }*/
-
+        }
+*/
     NxtContext.setStartPosition(250,250);
     NxtContext.setStartDirection(90);
+    //NxtContext.useObstacle("sprites/Circle.jpg", 250, 475);
     for(int i = 0; i < 10; i++) {
-      randomXCoordinate = generator.nextInt(475) + 10;
-      randomYCoordinate = generator.nextInt(475) + 10;
+      randomXCoordinate = generatorX.nextInt(475) + 10;
+      randomYCoordinate = generatorY.nextInt(475) + 10;
       NxtContext.useObstacle("sprites/Obstacle.png", randomXCoordinate, randomYCoordinate);
     }
     /*    NxtContext.useObstacle("sprites/Obstacle.png", 250, 25);
