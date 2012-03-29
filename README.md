@@ -23,4 +23,4 @@ the shortest path between all the obstacles without any specific starting or end
 * Genetic algorithm
 * Revisiting of all obstacles
 * Displaying a grid with "generated" obstacles
-* document code
+* Document code
