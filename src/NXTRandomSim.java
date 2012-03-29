@@ -5,6 +5,9 @@ import ch.aplu.nxtsim.*;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
 import java.util.*;
+
+import static java.lang.Math.sin;
+
 /*
 // Used for obstacle creation
 import java.awt.image.*;
@@ -30,6 +33,7 @@ public class NXTRandomSim
   static int randomXCoordinate;
   static int randomYCoordinate;
   int randomNumber = generator.nextInt(500);
+  int reset = 0;
 
   public NXTRandomSim()
   {
@@ -47,7 +51,8 @@ public class NXTRandomSim
       {
         if (!obstacleList.contains(currentPosition))
         {
-          obstacleList.add(new Point(currentPosition));
+          obstacleList.add(new Point((int)(currentPosition.getX()+ 15*Math.cos(gear.getDirection())),(int)(currentPosition.getY()+ 15*Math.sin(gear.getDirection()))));
+          System.out.println("Obstacle "+obstacleList.size());
           gear.backward(600);
           //gear.setDirection(randomNumber - gear.getDirection());
           gear.right(200);
@@ -64,19 +69,25 @@ public class NXTRandomSim
           obstaclePosition = obstacleListChecker.next();
           if (currentPosition.distance(obstaclePosition) < 40){
             gear.backward(600);
-            gear.left(200);
+            if (generator.nextInt(500) < 250)
+              gear.left(200);
+            else
+              gear.right(200);
             //gear.setDirection(randomNumber - gear.getDirection());
             gear.forward();
-            System.out.println(currentPosition.distance(obstaclePosition));
-            System.out.println(gear.getDirection());
+            System.out.println("Distance "+currentPosition.distance(obstaclePosition));
+            System.out.println("Headed "+gear.getDirection());
           }
         }
       }
       if (gear.getX() < 0 || gear.getX() > 500 || gear.getY() < 0 || gear.getY() >500)
       {
-        gear.backward(3000);
+        gear.backward(1500);
         //gear.setDirection(randomNumber - gear.getDirection());
         gear.forward();
+        robot.reset();
+        reset++;
+        System.out.println("Reset "+reset);
       }
       checkLineColor();
     }
@@ -89,8 +100,9 @@ public class NXTRandomSim
     int v1 = ls1.getValue();
     int v2 = ls2.getValue();
     if (v1 < v && v2 < v) {
-      gear.left(1);
       gear.forward();
+      if (generator.nextInt(10) < 2)
+        gear.left(2);
     }
     if (v1 < v && v2 > v)
       gear.rightArc(r);
@@ -173,16 +185,19 @@ public class NXTRandomSim
     for(int i = 0; i < 10; i++) {
       randomXCoordinate = generatorX.nextInt(475) + 10;
       randomYCoordinate = generatorY.nextInt(475) + 10;
-      NxtContext.useObstacle("sprites/Circle.png", randomXCoordinate, randomYCoordinate);
-    }
-    /*    NxtContext.useObstacle("sprites/Obstacle.png", 250, 25);
-  NxtContext.useObstacle("sprites/Obstacle.png", 250, 475);
-  NxtContext.useObstacle("sprites/Obstacle.png", 400, 250);
-  NxtContext.useObstacle("sprites/Obstacle.png", 100, 250);
-  NxtContext.useObstacle("sprites/Obstacle.png", 175, 350);
-  NxtContext.useObstacle("sprites/Obstacle.png", 325, 350);
-  NxtContext.useObstacle("sprites/Obstacle.png", 175, 150);
-  NxtContext.useObstacle("sprites/Obstacle.png", 325, 150);*/
+      if (randomXCoordinate > 25 && randomXCoordinate < 475 && randomYCoordinate > 25 && randomYCoordinate < 475)
+        NxtContext.useObstacle("sprites/Circle.png", randomXCoordinate, randomYCoordinate);
+      else
+        i--;
+    }/*
+  NxtContext.useObstacle("sprites/Circle.png", 250, 25);
+  NxtContext.useObstacle("sprites/Circle.png", 250, 475);
+  NxtContext.useObstacle("sprites/Circle.png", 400, 250);
+  NxtContext.useObstacle("sprites/Circle.png", 100, 250);
+  NxtContext.useObstacle("sprites/Circle.png", 175, 350);
+  NxtContext.useObstacle("sprites/Circle.png", 325, 350);
+  NxtContext.useObstacle("sprites/Circle.png", 175, 150);
+  NxtContext.useObstacle("sprites/Circle.png", 325, 150);*/
   }
 }
 
