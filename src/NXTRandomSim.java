@@ -5,9 +5,9 @@ import ch.aplu.nxtsim.*;
 import ch.aplu.jgamegrid.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 
-import static java.lang.Math.sin;
 
 /*
 // Used for obstacle creation
@@ -15,9 +15,9 @@ import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-*/
+ */
 
-public class NXTRandomSim {
+public class NXTRandomSim implements MouseListener {
   static Random generator = new Random(System.currentTimeMillis());
   static Random generatorX = new Random(3 * System.currentTimeMillis());
   static Random generatorY = new Random(7 * System.currentTimeMillis());
@@ -34,6 +34,8 @@ public class NXTRandomSim {
   static int randomYCoordinate;
   int randomNumber = generator.nextInt(500);
   int reset = 0;
+
+  Container contentPane;
 
   public NXTRandomSim() {
     robot.addPart(gear);
@@ -55,12 +57,17 @@ public class NXTRandomSim {
             obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
           else
             obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
-          System.out.println("Obstacle " + obstacleList.size());
+          //System.out.println("Obstacle " + obstacleList.size());
+          //System.out.println("Headed " + gear.getDirection());
           gear.backward(600);
           //gear.setDirection(randomNumber - gear.getDirection());
-          gear.right(200);
+          if (generator.nextInt(500) < 125)
+            gear.left(200);
+          else if (generator.nextInt(500) > 375)
+            gear.right(200);
           gear.forward();
-          System.out.println("(" + obstacleList.getLast().getX() + ", " + obstacleList.getLast().getY() + ")");
+          //System.out.println("(" + obstacleList.getLast().getX() + ", " + obstacleList.getLast().getY() + ")");
+          //System.out.println(obstacleList.toString());
         }
         checkLineColor();
       }
@@ -76,8 +83,8 @@ public class NXTRandomSim {
               gear.right(200);
             //gear.setDirection(randomNumber - gear.getDirection());
             gear.forward();
-            System.out.println("Distance " + currentPosition.distance(obstaclePosition));
-            System.out.println("Headed " + gear.getDirection());
+            //System.out.println("Distance " + currentPosition.distance(obstaclePosition));
+            //System.out.println("Headed " + gear.getDirection());
           }
         }
       }
@@ -87,7 +94,8 @@ public class NXTRandomSim {
         //gear.forward();
         robot.reset();
         reset++;
-        System.out.println("Reset " + reset);
+        //System.out.println("Reset " + reset);
+        //System.out.println("Obstacle " + obstacleList.size());
       }
       checkLineColor();
     }
@@ -100,20 +108,26 @@ public class NXTRandomSim {
     int v2 = ls2.getValue();
     if (v1 < v && v2 < v) {
       gear.forward();
-      if (generator.nextInt(10) < 2)
-        gear.left(2);
+      if (generator.nextInt(10) + 1 < 2)
+        gear.left(20);
+      else if (generator.nextInt(10) + 1 > 8)
+        gear.right(15);
     }
     if (v1 < v && v2 > v)
       gear.rightArc(r);
     if (v1 > v && v2 < v)
       gear.leftArc(r);
-    if (v1 > v && v2 > v)
-      gear.backward();
+    if (v1 > v && v2 > v) {
+      gear.backward(100);
+      gear.right(15);
+    }
   }
 
   @SuppressWarnings("unused")
   private static void _init(GameGrid gg) {
     GGBackground bg = gg.getBg();
+    //bg.setBgColor(Color.black);
+    //bg.setPaintColor(Color.white);
     bg.setPaintColor(Color.black);
     bg.fillRectangle(new Point(9, 9), new Point(491, 491));
   }
@@ -123,68 +137,73 @@ public class NXTRandomSim {
   }
 
   /*
-      public static void obstacleFactory()
-      {
-          int width = 30;
-          int height = 30;
+   public static void obstacleFactory()
+   {
+       int width = 30;
+       int height = 30;
 
-          // Create a buffered image in which to draw
-          //BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+       // Create a buffered image in which to draw
+       //BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-          GraphicsEnvironment environment =
-                  GraphicsEnvironment.getLocalGraphicsEnvironment();
+       GraphicsEnvironment environment =
+               GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-          GraphicsDevice device =
-                  environment.getDefaultScreenDevice();
+       GraphicsDevice device =
+               environment.getDefaultScreenDevice();
 
-          GraphicsConfiguration config = device.getDefaultConfiguration();
+       GraphicsConfiguration config = device.getDefaultConfiguration();
 
-          // Create an image that supports transparent pixels
-          BufferedImage bufferedImage = config.createCompatibleImage(width, height,
-                  Transparency.TRANSLUCENT);
+       // Create an image that supports transparent pixels
+       BufferedImage bufferedImage = config.createCompatibleImage(width, height,
+               Transparency.TRANSLUCENT);
 
-          // Create a graphics contents on the buffered image
-          Graphics2D g2d = bufferedImage.createGraphics();
+       // Create a graphics contents on the buffered image
+       Graphics2D g2d = bufferedImage.createGraphics();
 
-          // Draw graphics
-          g2d.setColor(Color.yellow);
-          g2d.fillOval(0, 0, width, height);
+       // Draw graphics
+       g2d.setColor(Color.yellow);
+       g2d.fillOval(0, 0, width, height);
 
-          // Graphics context no longer needed so dispose it
-          g2d.dispose();
+       // Graphics context no longer needed so dispose it
+       g2d.dispose();
 
 
-          RenderedImage rendImage = bufferedImage;
-          //return bufferedImage;
-          // Write generated image to a file
-          try {
-              // Save as PNG
-              File file = new File("src/sprites/Circle.jpg");
-              ImageIO.write(rendImage, "jpg", file);
-          } catch (IOException e) {}
-      }
+       RenderedImage rendImage = bufferedImage;
+       //return bufferedImage;
+       // Write generated image to a file
+       try {
+           // Save as PNG
+           File file = new File("src/sprites/Circle.jpg");
+           ImageIO.write(rendImage, "jpg", file);
+       } catch (IOException e) {}
+   }
   */
-  // ------------------ Environment --------------------------
+  //------------------ Environment --------------------------
   static {        // TODO get obstacle generation to work
     //RenderedImage rendImage = obstacleFactory();
-/*
-        obstacleFactory();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-          System.out.println("Error...");
-        }
-*/
+    /*
+   obstacleFactory();
+   try {
+       Thread.sleep(5000);
+   } catch (InterruptedException e) {
+     System.out.println("Error...");
+   }
+    */
     NxtContext.setStartPosition(250, 250);
     NxtContext.setStartDirection(90);
-    //NxtContext.useObstacle("sprites/Circle.jpg", 250, 475);
+    //NxtContext.useObstacle("sprites/9Circles.jpg", 100, 100);
+    //NxtContext.useObstacle("sprites/Connected.png", 100, 100);
     for (int i = 0; i < 10; i++) {
       randomXCoordinate = generatorX.nextInt(475) + 10;
       randomYCoordinate = generatorY.nextInt(475) + 10;
-      if (randomXCoordinate > 25 && randomXCoordinate < 475 && randomYCoordinate > 25 && randomYCoordinate < 475)
+      if (randomXCoordinate > 25 && randomXCoordinate < 475 && randomYCoordinate > 25 && randomYCoordinate < 475) {
         NxtContext.useObstacle("sprites/Circle.png", randomXCoordinate, randomYCoordinate);
-      else
+        System.out.println("(" + randomXCoordinate + ", " + randomYCoordinate + ")");
+      } else
         i--;
+      NxtContext.useObstacle("sprites/Circle.png", 0, 0);
+      NxtContext.useObstacle("sprites/Circle.png", 20, 20);
+
     }/*
   NxtContext.useObstacle("sprites/Circle.png", 250, 25);
   NxtContext.useObstacle("sprites/Circle.png", 250, 475);
@@ -195,6 +214,36 @@ public class NXTRandomSim {
   NxtContext.useObstacle("sprites/Circle.png", 175, 150);
   NxtContext.useObstacle("sprites/Circle.png", 325, 150);*/
   }
-}
 
+  @Override
+  public void mouseClicked(MouseEvent arg0) {
+    System.out.println(arg0.getX());
+    System.out.println(arg0.getY());
+    System.out.println("Click");
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void mouseExited(MouseEvent arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void mousePressed(MouseEvent arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent arg0) {
+    // TODO Auto-generated method stub
+
+  }
+}
 //http://www.java-tips.org/java-se-tips/java.awt.geom/how-to-create-a-buffered-image-2.html
