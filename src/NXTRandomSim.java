@@ -173,7 +173,7 @@ public class NXTRandomSim
     for(int i = 0; i < 10; i++) {
       randomXCoordinate = generatorX.nextInt(475) + 10;
       randomYCoordinate = generatorY.nextInt(475) + 10;
-      NxtContext.useObstacle("sprites/Obstacle.png", randomXCoordinate, randomYCoordinate);
+      NxtContext.useObstacle("sprites/Circle.png", randomXCoordinate, randomYCoordinate);
     }
     /*    NxtContext.useObstacle("sprites/Obstacle.png", 250, 25);
   NxtContext.useObstacle("sprites/Obstacle.png", 250, 475);
