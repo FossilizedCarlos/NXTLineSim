@@ -8,15 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-
-/*
-// Used for obstacle creation
-import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
- */
-
 public class NXTRandomSim implements MouseListener {
   static Random generator = new Random(System.currentTimeMillis());
   static Random generatorX = new Random(3 * System.currentTimeMillis());
@@ -35,8 +26,6 @@ public class NXTRandomSim implements MouseListener {
   int randomNumber = generator.nextInt(500);
   int reset = 0;
 
-  Container contentPane;
-
   public NXTRandomSim() {
     robot.addPart(gear);
     robot.addPart(ls1);
@@ -50,13 +39,13 @@ public class NXTRandomSim implements MouseListener {
       if (ts1.isPressed()) {
         if (!obstacleList.contains(currentPosition)) {
           if (gear.getDirection() >= 0 && gear.getDirection() < 90)
-            obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
+            obstacleList.add(new Point((int) (currentPosition.getX() + 10 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 10 * Math.sin(gear.getDirection()))));
           if (gear.getDirection() >= 90 && gear.getDirection() < 180)
-            obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
+            obstacleList.add(new Point((int) (currentPosition.getX() + 10 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 10 * Math.sin(gear.getDirection()))));
           if (gear.getDirection() >= 180 && gear.getDirection() < 270)
-            obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
+            obstacleList.add(new Point((int) (currentPosition.getX() + 10 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 10 * Math.sin(gear.getDirection()))));
           else
-            obstacleList.add(new Point((int) (currentPosition.getX() + 15 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 15 * Math.sin(gear.getDirection()))));
+            obstacleList.add(new Point((int) (currentPosition.getX() + 10 * Math.cos(gear.getDirection())), (int) (currentPosition.getY() + 10 * Math.sin(gear.getDirection()))));
           //System.out.println("Obstacle " + obstacleList.size());
           //System.out.println("Headed " + gear.getDirection());
           gear.backward(600);
@@ -136,48 +125,6 @@ public class NXTRandomSim implements MouseListener {
     new NXTRandomSim();
   }
 
-  /*
-   public static void obstacleFactory()
-   {
-       int width = 30;
-       int height = 30;
-
-       // Create a buffered image in which to draw
-       //BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-       GraphicsEnvironment environment =
-               GraphicsEnvironment.getLocalGraphicsEnvironment();
-
-       GraphicsDevice device =
-               environment.getDefaultScreenDevice();
-
-       GraphicsConfiguration config = device.getDefaultConfiguration();
-
-       // Create an image that supports transparent pixels
-       BufferedImage bufferedImage = config.createCompatibleImage(width, height,
-               Transparency.TRANSLUCENT);
-
-       // Create a graphics contents on the buffered image
-       Graphics2D g2d = bufferedImage.createGraphics();
-
-       // Draw graphics
-       g2d.setColor(Color.yellow);
-       g2d.fillOval(0, 0, width, height);
-
-       // Graphics context no longer needed so dispose it
-       g2d.dispose();
-
-
-       RenderedImage rendImage = bufferedImage;
-       //return bufferedImage;
-       // Write generated image to a file
-       try {
-           // Save as PNG
-           File file = new File("src/sprites/Circle.jpg");
-           ImageIO.write(rendImage, "jpg", file);
-       } catch (IOException e) {}
-   }
-  */
   //------------------ Environment --------------------------
   static {        // TODO get obstacle generation to work
     //RenderedImage rendImage = obstacleFactory();
@@ -201,9 +148,6 @@ public class NXTRandomSim implements MouseListener {
         System.out.println("(" + randomXCoordinate + ", " + randomYCoordinate + ")");
       } else
         i--;
-      NxtContext.useObstacle("sprites/Circle.png", 0, 0);
-      NxtContext.useObstacle("sprites/Circle.png", 20, 20);
-
     }/*
   NxtContext.useObstacle("sprites/Circle.png", 250, 25);
   NxtContext.useObstacle("sprites/Circle.png", 250, 475);
@@ -223,27 +167,15 @@ public class NXTRandomSim implements MouseListener {
   }
 
   @Override
-  public void mouseEntered(MouseEvent arg0) {
-    // TODO Auto-generated method stub
-
-  }
+  public void mouseEntered(MouseEvent arg0) {}
 
   @Override
-  public void mouseExited(MouseEvent arg0) {
-    // TODO Auto-generated method stub
-
-  }
+  public void mouseExited(MouseEvent arg0) {}
 
   @Override
-  public void mousePressed(MouseEvent arg0) {
-    // TODO Auto-generated method stub
-
-  }
+  public void mousePressed(MouseEvent arg0) {}
 
   @Override
-  public void mouseReleased(MouseEvent arg0) {
-    // TODO Auto-generated method stub
-
-  }
+  public void mouseReleased(MouseEvent arg0) {}
 }
 //http://www.java-tips.org/java-se-tips/java.awt.geom/how-to-create-a-buffered-image-2.html
