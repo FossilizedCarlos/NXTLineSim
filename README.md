@@ -5,7 +5,7 @@ NXTLineSim
 ----------
 
 This program simulates a line following robot that also avoids obstacles. This is the simple
-implementation, and involves the robot using color sensors to remain inside of a circle road while
+implementation, and involves the robot using color sensors to remain inside of a circular road while
 avoiding obstacles.
 
 NXTRandomSim
